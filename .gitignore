@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+# 실제 비용·가격이 든 가져오기 파일은 저장소에 올리지 않음 (숫자는 Supabase에만)
+private/
+.DS_Store
+*.log
+scripts/old/

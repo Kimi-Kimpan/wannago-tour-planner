@@ -1,0 +1,96 @@
+{
+  "format": "wannago-tour/v1",
+  "tour": {
+    "name": "[더미] 이베리아 샘플 투어 9일",
+    "concept": "앱 사용법을 보여 주기 위한 가상의 예시 투어예요. 실제 상품이 아닙니다.",
+    "depart_date": null,
+    "min_pax": 20,
+    "fx_rates": {
+      "KRW": 1,
+      "EUR": 1500
+    },
+    "origin_label": "인천",
+    "return_overnight": true
+  },
+  "stops": [
+    {
+      "name": "리스본",
+      "lat": 38.7223,
+      "lng": -9.1393,
+      "kind": "stay",
+      "nights": 3,
+      "arrive_mode": "flight",
+      "arrive_note": "인천 → 리스본 항공",
+      "free_days": 1,
+      "nearby": [
+        {
+          "name": "카스카이스",
+          "lat": 38.6979,
+          "lng": -9.4215,
+          "note": "기차 약 40분 (예시)"
+        }
+      ],
+      "memo": "더미 메모"
+    },
+    {
+      "name": "에보라",
+      "lat": 38.5714,
+      "lng": -7.9135,
+      "kind": "via",
+      "arrive_mode": "bus"
+    },
+    {
+      "name": "세비야",
+      "lat": 37.3891,
+      "lng": -5.9845,
+      "kind": "stay",
+      "nights": 2,
+      "arrive_mode": "bus",
+      "arrive_note": "버스 약 5시간 (예시)"
+    },
+    {
+      "name": "코르도바",
+      "lat": 37.8882,
+      "lng": -4.7794,
+      "kind": "via",
+      "arrive_mode": "bus"
+    },
+    {
+      "name": "그라나다",
+      "lat": 37.1773,
+      "lng": -3.5986,
+      "kind": "stay",
+      "nights": 2,
+      "arrive_mode": "bus",
+      "arrive_note": "버스 약 3시간 (예시)",
+      "free_days": 1,
+      "nearby": [
+        {
+          "name": "말라가",
+          "lat": 36.7213,
+          "lng": -4.4214,
+          "note": "버스 약 1시간 30분 (예시)"
+        }
+      ]
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "plan": "도착, 체크인 (예시)"
+    },
+    {
+      "day": 2,
+      "plan": "시내 둘러보기 (예시)"
+    },
+    {
+      "day": 5,
+      "plan": "시내 둘러보기 (예시)",
+      "memo": "더미 내부 메모"
+    },
+    {
+      "day": 8,
+      "plan": "출국 (예시)"
+    }
+  ]
+}
