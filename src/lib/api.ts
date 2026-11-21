@@ -15,6 +15,10 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   return check(res) as Profile | null;
 }
 
+export async function updateDisplayName(userId: string, name: string): Promise<void> {
+  check(await supabase.from('profiles').update({ display_name: name }).eq('id', userId));
+}
+
 export async function listTours(): Promise<Tour[]> {
   return check(await supabase.from('tours').select('*').order('updated_at', { ascending: false })) as Tour[];
 }

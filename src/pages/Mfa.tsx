@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../auth/AuthProvider';
 
 export default function Mfa({ onSkip }: { onSkip: () => void }) {
+  // 관리자에게만 보이는 화면. '트래블리더로 로그인'을 고르면 관리자 메뉴 없이 들어감
   const { refresh } = useAuth();
   const [factorId, setFactorId] = useState<string | null>(null);
   const [qr, setQr] = useState<string | null>(null);
@@ -50,7 +51,7 @@ export default function Mfa({ onSkip }: { onSkip: () => void }) {
     <div className="center-page">
       <form className="card login" onSubmit={verify}>
         <h1>관리자 2단계 인증</h1>
-        <p className="muted">매출·마진은 2단계 인증을 마친 관리자에게만 보여요.</p>
+        <p className="muted">관리자 메뉴는 2단계 인증 후에 열려요. 등록은 처음 한 번만 하면 돼요.</p>
         {loading && <p>불러오는 중…</p>}
         {qr && (
           <>
@@ -65,7 +66,7 @@ export default function Mfa({ onSkip }: { onSkip: () => void }) {
         </label>
         <button className="primary" disabled={code.trim().length !== 6}>확인</button>
         <button type="button" className="ghost" onClick={onSkip}>
-          나중에 (매출 화면 없이 계속)
+          트래블리더로 로그인
         </button>
         {msg && <p className="note">{msg}</p>}
       </form>

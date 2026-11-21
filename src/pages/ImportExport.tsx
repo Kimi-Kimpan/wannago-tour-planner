@@ -121,7 +121,7 @@ export default function ImportExport() {
               <p className={`note ${financeAccess ? '' : 'warn'}`}>
                 {financeAccess
                   ? `비용 ${parsed.costs.length}개 항목과 참가비도 함께 저장해요.`
-                  : '이 파일에는 비용·가격이 들어 있지만 관리자(2단계 인증)만 저장할 수 있어 루트만 가져와요.'}
+                  : '루트와 일정을 가져와요.'}
               </p>
             )}
             {parsed.warnings.length > 0 && (

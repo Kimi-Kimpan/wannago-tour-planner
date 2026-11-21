@@ -70,7 +70,7 @@ export default function PrintView() {
     <div className="print-root">
       <div className="print-toolbar no-print">
         <span>{modeLabel} 기획안 미리보기</span>
-        {asked === 'internal' && mode !== 'internal' && <span className="note">매출 페이지는 관리자(2단계 인증)만 넣을 수 있어 트래블리더용으로 열었어요.</span>}
+        {asked === 'internal' && mode !== 'internal' && <span className="note">트래블리더용으로 열었어요.</span>}
         <button className="primary" onClick={print}>인쇄 / PDF로 저장</button>
       </div>
       {watermark && (

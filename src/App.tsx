@@ -53,13 +53,14 @@ function Gate() {
   return (
     <Routes>
       <Route path="/tours/:id/print" element={<PrintView />} />
-      <Route path="*" element={<Shell />} />
+      <Route path="*" element={<Shell onAdminLogin={() => setMfaSkipped(false)} />} />
     </Routes>
   );
 }
 
-function Shell() {
-  const { profile, isAdmin, financeAccess, signOut } = useAuth();
+function Shell({ onAdminLogin }: { onAdminLogin: () => void }) {
+  const { session, profile, isAdmin, financeAccess, signOut } = useAuth();
+  const needsPassword = !session?.user.user_metadata?.password_set;
   return (
     <>
       <header className="topbar">
@@ -72,13 +73,20 @@ function Shell() {
           <NavLink to="/account">내 계정</NavLink>
         </nav>
         <div className="who">
-          <span className={`badge ${isAdmin ? 'admin' : ''}`}>
-            {isAdmin ? (financeAccess ? '관리자' : '관리자(2단계 인증 전)') : '트래블리더'}
-          </span>
+          <span className={`badge ${financeAccess ? 'admin' : ''}`}>{financeAccess ? '관리자' : '트래블리더'}</span>
+          {isAdmin && !financeAccess && (
+            <button className="ghost small" onClick={onAdminLogin}>관리자로 전환</button>
+          )}
           <span className="muted small">{profile?.display_name}</span>
           <button className="ghost small" onClick={signOut}>로그아웃</button>
         </div>
       </header>
+      {needsPassword && (
+        <div className="banner">
+          다음부터 이메일·비밀번호로 바로 로그인할 수 있게 비밀번호를 만들어 두세요.
+          <NavLink to="/account" className="button small">비밀번호 만들기</NavLink>
+        </div>
+      )}
       <main>
         <Routes>
           <Route path="/" element={<TourList />} />

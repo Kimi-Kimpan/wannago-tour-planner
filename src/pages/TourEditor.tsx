@@ -165,10 +165,10 @@ export default function TourEditor() {
           <p>A4 인쇄용 페이지를 새 탭으로 열어요. 거기서 '인쇄 / PDF로 저장'을 누르세요.</p>
           <div className="row gap wrap">
             {financeAccess && (
-              <a className="button primary" href={pdfLink('internal')} target="_blank" rel="noreferrer">내부용 (매출 포함, 대외비)</a>
+              <a className="button primary" href={pdfLink('internal')} target="_blank" rel="noreferrer">내부용 (대외비)</a>
             )}
-            <a className="button" href={pdfLink('leader')} target="_blank" rel="noreferrer">트래블리더용 (매출 제외)</a>
-            <a className="button" href={pdfLink('customer')} target="_blank" rel="noreferrer">고객용 (매출·내부 메모 제외)</a>
+            <a className="button" href={pdfLink('leader')} target="_blank" rel="noreferrer">트래블리더용</a>
+            <a className="button" href={pdfLink('customer')} target="_blank" rel="noreferrer">고객용 (내부 메모 제외)</a>
           </div>
         </div>
       )}

@@ -84,7 +84,7 @@ export default function StopList({
             >
               <div className="stop-head" onClick={() => setOpen(open === i ? null : i)}>
                 {canEdit && <span className="handle" title="끌어서 순서 바꾸기">⋮⋮</span>}
-                <span className={`num ${isStay ? '' : 'hollow'}`}>{isStay ? stayNo : ''}</span>
+                <span className={`stop-num ${isStay ? '' : 'hollow'}`}>{isStay ? stayNo : ''}</span>
                 <span className="stop-name">{s.name || '이름 없음'}</span>
                 <span className="small muted">
                   {isStay ? `${s.nights}박` : '경유'} · {MODE_LABEL[s.arrive_mode]}
