@@ -10,6 +10,7 @@ interface AuthState {
   ready: boolean;
   session: Session | null;
   profile: Profile | null;
+  profileError: string | null; // 프로필을 못 읽은 이유(권한 문제 진단용)
   aal: Aal;
   nextAal: Aal;
   isAdmin: boolean; // 역할이 관리자
@@ -24,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [aal, setAal] = useState<Aal>(null);
   const [nextAal, setNextAal] = useState<Aal>(null);
 
@@ -36,10 +38,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     const [p, a] = await Promise.all([
-      getProfile(s.user.id).catch(() => null),
+      getProfile(s.user.id).catch((e: Error) => {
+        setProfileError(e.message);
+        return null;
+      }),
       supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
     ]);
     setProfile(p);
+    if (p) setProfileError(null);
+    else setProfileError((prev) => prev ?? '프로필 행이 없어요');
     setAal((a.data?.currentLevel as Aal) ?? null);
     setNextAal((a.data?.nextLevel as Aal) ?? null);
   }, []);
@@ -68,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       session,
       profile,
+      profileError,
       aal,
       nextAal,
       isAdmin,
@@ -80,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await supabase.auth.signOut();
       },
     };
-  }, [ready, session, profile, aal, nextAal, load]);
+  }, [ready, session, profile, profileError, aal, nextAal, load]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

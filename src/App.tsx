@@ -32,7 +32,7 @@ export default function App() {
 }
 
 function Gate() {
-  const { ready, session, profile, isAdmin, aal, signOut } = useAuth();
+  const { ready, session, profile, profileError, isAdmin, aal, signOut } = useAuth();
   const [mfaSkipped, setMfaSkipped] = useState(false);
 
   if (!ready) return <div className="center-page muted">불러오는 중…</div>;
@@ -43,6 +43,7 @@ function Gate() {
         <div className="card login">
           <h1>계정이 준비되지 않았어요</h1>
           <p className="muted">관리자에게 초대 상태를 확인해 달라고 요청해 주세요.</p>
+          {profileError && <p className="small note">이유: {profileError} ({session.user.email})</p>}
           <button onClick={signOut}>로그아웃</button>
         </div>
       </div>
