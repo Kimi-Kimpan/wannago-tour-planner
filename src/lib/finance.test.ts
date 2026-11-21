@@ -30,3 +30,9 @@ test('통화 환산: EUR 60 × 7 × 1,500 + KRW 370,000 = 1인 변동비 1,000,0
   assert.deepEqual(costTotals(items, { KRW: 1, EUR: 1500 }), { perPersonKrw: 1_000_000, fixedKrw: 10_000_000 });
   assert.throws(() => costTotals([{ ...items[0], currency: 'CZK' }], { KRW: 1 }));
 });
+
+test('박수 연동: 숙박 60유로 × 총 7박 → 박수가 8박으로 늘면 자동으로 8박치', () => {
+  const items: CostItem[] = [{ position: 1, label: '숙박', kind: 'per_person', currency: 'EUR', amount: 60, quantity: 1, per_night: true, note: '' }];
+  assert.equal(costTotals(items, { KRW: 1, EUR: 1500 }, 7).perPersonKrw, 630_000);
+  assert.equal(costTotals(items, { KRW: 1, EUR: 1500 }, 8).perPersonKrw, 720_000);
+});

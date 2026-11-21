@@ -1,5 +1,6 @@
 // 루트 가져오기·내보내기 JSON 형식 (wannago-tour/v1)
 // Claude 대화에서 이 형식으로 루트를 정리해 붙여 넣으면 '초안' 투어로 만들어집니다.
+import { itineraryByDayNumber, normalizeItinerary } from './itinerary';
 import type { CostItem, CostKind, DayOverride, NearbyOption, Pricing, Stop, StopKind, Tour, TravelMode } from './types';
 
 export const FORMAT = 'wannago-tour/v1';
@@ -28,9 +29,9 @@ export interface TourFile {
     nearby?: NearbyOption[];
     memo?: string;
   }>;
-  days?: Array<{ day: number; plan?: string; memo?: string }>;
+  days?: Array<{ day: number; plan?: string; memo?: string; free?: boolean }>;
   finance?: {
-    costs: Array<{ label: string; kind: CostKind; currency?: string; amount: number; quantity?: number; note?: string }>;
+    costs: Array<{ label: string; kind: CostKind; currency?: string; amount: number; quantity?: number; per_night?: boolean; note?: string }>;
     price_options?: number[];
     pax_options?: number[];
     fee_rate?: number;
@@ -111,6 +112,7 @@ export function parseTourFile(text: string): { ok: true; value: ParsedImport } |
         currency,
         amount: c?.amount ?? 0,
         quantity: c?.quantity ?? 1,
+        per_night: Boolean(c?.per_night),
         note: c?.note ?? '',
       };
     });
@@ -127,7 +129,11 @@ export function parseTourFile(text: string): { ok: true; value: ParsedImport } |
 
   const itinerary: Record<string, DayOverride> = {};
   for (const d of f.days ?? []) {
-    if (d.plan?.trim() || d.memo?.trim()) itinerary[String(d.day)] = { plan: d.plan ?? '', memo: d.memo ?? '' };
+    const v: DayOverride = {};
+    if (d.plan?.trim()) v.plan = d.plan;
+    if (d.memo?.trim()) v.memo = d.memo;
+    if (typeof d.free === 'boolean') v.free = d.free;
+    if (Object.keys(v).length) itinerary[String(d.day)] = v;
   }
 
   const stops: Stop[] = f.stops.map((s, i) => {
@@ -160,7 +166,8 @@ export function parseTourFile(text: string): { ok: true; value: ParsedImport } |
         fx_rates: fx,
         origin_label: f.tour.origin_label ?? '인천',
         return_overnight: f.tour.return_overnight ?? true,
-        itinerary,
+        // 일차 번호로 받은 내용을 도시 키로 바꿔 저장(이후 하루를 넣고 빼도 내용이 따라감)
+        itinerary: normalizeItinerary(stops, { origin_label: f.tour.origin_label ?? '인천', return_overnight: f.tour.return_overnight ?? true, itinerary }),
         status: 'draft', // 가져오기는 항상 초안
       },
       stops,
@@ -177,9 +184,7 @@ export function buildTourFile(
   stops: Stop[],
   finance?: { costs: CostItem[]; pricing: Pricing | null },
 ): TourFile {
-  const days = Object.entries(tour.itinerary ?? {})
-    .map(([day, o]) => ({ day: Number(day), plan: o.plan ?? '', memo: o.memo ?? '' }))
-    .sort((a, b) => a.day - b.day);
+  const days = itineraryByDayNumber(stops, tour);
   const file: TourFile = {
     format: FORMAT,
     tour: {
@@ -216,6 +221,7 @@ export function buildTourFile(
         currency: c.currency,
         amount: Number(c.amount),
         quantity: Number(c.quantity),
+        ...(c.per_night ? { per_night: true } : {}),
         note: c.note,
       })),
       price_options: finance.pricing?.price_options.map(Number) ?? [],

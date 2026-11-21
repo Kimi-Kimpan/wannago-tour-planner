@@ -153,7 +153,7 @@ export default function PrintView() {
                 <tr key={c.id ?? c.label}>
                   <td>{c.label}</td>
                   <td>{c.kind === 'per_person' ? '1인 변동비' : '고정비'}</td>
-                  <td className="num">{won(toKrw({ ...c, amount: Number(c.amount), quantity: Number(c.quantity) }, tour.fx_rates))}</td>
+                  <td className="num">{won(toKrw({ ...c, amount: Number(c.amount), quantity: Number(c.quantity) }, tour.fx_rates, totalNights(stops)))}</td>
                   <td className="small">{c.note}</td>
                 </tr>
               ))}

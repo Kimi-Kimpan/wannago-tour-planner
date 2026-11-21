@@ -12,7 +12,7 @@ const DASH = {
 
 function markerEl(kind: 'stay' | 'via' | 'nearby', label: string, sub?: string): HTMLElement {
   const wrap = document.createElement('div');
-  wrap.className = `gm-marker ${kind}`;
+  wrap.className = `gm-marker gm-${kind}`; // 'nearby' 같은 다른 화면의 클래스와 겹치지 않게 gm- 접두사
   const dot = document.createElement('div');
   dot.className = 'dot';
   if (kind === 'stay') dot.textContent = label;

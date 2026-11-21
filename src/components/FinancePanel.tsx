@@ -6,7 +6,19 @@ import type { CostItem, CostKind, PnlRow, Pricing } from '../lib/types';
 
 export const FINANCE_DISCLAIMER = '빠진 것: 부가세, 마케팅비, 환차손';
 
-export default function FinancePanel({ tourId, fx, minPax }: { tourId: string; fx: Record<string, number>; minPax: number }) {
+export default function FinancePanel({
+  tourId,
+  fx,
+  minPax,
+  nights,
+  routeDirty,
+}: {
+  tourId: string;
+  fx: Record<string, number>;
+  minPax: number;
+  nights: number; // 편집 중인 루트의 총 박수
+  routeDirty: boolean; // 루트에 저장 안 한 변경이 있는지
+}) {
   const [costs, setCosts] = useState<CostItem[]>([]);
   const [pricing, setPricing] = useState<Pricing>({ price_options: [], pax_options: [], fee_rate: 0.025 });
   const [rows, setRows] = useState<PnlRow[]>([]);
@@ -42,14 +54,20 @@ export default function FinancePanel({ tourId, fx, minPax }: { tourId: string; f
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tourId]);
 
+  // 루트를 저장하면(박수가 바뀌었을 수 있으니) DB 계산을 다시 불러옴
+  useEffect(() => {
+    if (!routeDirty) void calc().catch(() => undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeDirty]);
+
   // 입력 중 미리보기(저장 전). 저장 후에는 DB 함수 결과로 표를 다시 그림
   const preview = useMemo(() => {
     try {
-      return costTotals(costs, fx);
+      return costTotals(costs, fx, nights);
     } catch (e) {
       return (e as Error).message;
     }
-  }, [costs, fx]);
+  }, [costs, fx, nights]);
 
   const setCost = (i: number, patch: Partial<CostItem>) => {
     setCosts(costs.map((c, j) => (j === i ? { ...c, ...patch } : c)));
@@ -108,7 +126,7 @@ export default function FinancePanel({ tourId, fx, minPax }: { tourId: string; f
           {costs.map((c, i) => {
             let krw: string;
             try {
-              krw = won(toKrw(c, fx));
+              krw = won(toKrw(c, fx, nights));
             } catch {
               krw = '환율 없음';
             }
@@ -129,7 +147,18 @@ export default function FinancePanel({ tourId, fx, minPax }: { tourId: string; f
                   </select>
                 </td>
                 <td><input className="num" type="number" value={c.amount} onChange={(e) => setCost(i, { amount: Number(e.target.value) })} /></td>
-                <td><input className="num short" type="number" value={c.quantity} onChange={(e) => setCost(i, { quantity: Number(e.target.value) })} /></td>
+                <td>
+                  <input
+                    className="num short"
+                    type="number"
+                    disabled={c.per_night}
+                    value={c.per_night ? nights : c.quantity}
+                    onChange={(e) => setCost(i, { quantity: Number(e.target.value) })}
+                  />
+                  <label className="check small per-night" title="투어 총 박수를 수량으로 써요">
+                    <input type="checkbox" checked={Boolean(c.per_night)} onChange={(e) => setCost(i, { per_night: e.target.checked })} /> 박수 연동
+                  </label>
+                </td>
                 <td className="num small">{krw}</td>
                 <td><input value={c.note} onChange={(e) => setCost(i, { note: e.target.value })} /></td>
                 <td>
@@ -144,6 +173,9 @@ export default function FinancePanel({ tourId, fx, minPax }: { tourId: string; f
         <button className="small" onClick={() => addCost('per_person')}>1인 변동비 추가</button>
         <button className="small" onClick={() => addCost('fixed')}>고정비 추가</button>
       </div>
+      {routeDirty && costs.some((c) => c.per_night) && (
+        <p className="small note warn">루트에 저장하지 않은 변경이 있어요. '박수 연동' 항목의 DB 계산은 위쪽 저장 후에 반영돼요.</p>
+      )}
       <p className="small">
         {typeof preview === 'string'
           ? preview

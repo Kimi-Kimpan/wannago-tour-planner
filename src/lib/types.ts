@@ -21,6 +21,7 @@ export interface NearbyOption {
 export interface DayOverride {
   plan?: string;
   memo?: string;
+  free?: boolean; // 직접 정한 자유일 여부(없으면 도시의 자유일 수로 자동)
 }
 
 export interface Tour {
@@ -65,6 +66,7 @@ export interface CostItem {
   currency: string;
   amount: number;
   quantity: number;
+  per_night?: boolean; // 수량을 투어 총 박수와 연동
   note: string;
 }
 

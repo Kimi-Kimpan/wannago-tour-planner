@@ -121,6 +121,25 @@ from public.tour_pnl('aaaaaaaa-0000-0000-0000-000000000001') where pax = 20 and 
 insert into results
 select '통화 환산 1인 변동비 = 1,000,000', per_person_krw = 1000000, per_person_krw::text
 from public.tour_cost_totals('aaaaaaaa-0000-0000-0000-000000000002');
+-- 박수 연동: 숙박 60유로를 '박수 연동'으로 바꾸고 이 투어에 7박 루트를 넣으면 60×7×1500 = 630,000
+reset role;
+update public.tour_costs set per_night = true, quantity = 1 where tour_id = 'aaaaaaaa-0000-0000-0000-000000000002' and position = 1;
+insert into public.tour_stops (tour_id, position, name, kind, nights) values
+  ('aaaaaaaa-0000-0000-0000-000000000002', 1, '리스본', 'stay', 3),
+  ('aaaaaaaa-0000-0000-0000-000000000002', 2, '에보라', 'via', 0),
+  ('aaaaaaaa-0000-0000-0000-000000000002', 3, '세비야', 'stay', 4);
+set role authenticated;
+select set_config('request.jwt.claims', '{"sub":"11111111-1111-1111-1111-111111111111","aal":"aal2"}', false);
+insert into results
+select '박수 연동(7박) 1인 변동비 = 1,000,000', per_person_krw = 1000000, per_person_krw::text
+from public.tour_cost_totals('aaaaaaaa-0000-0000-0000-000000000002');
+reset role;
+update public.tour_stops set nights = 5 where tour_id = 'aaaaaaaa-0000-0000-0000-000000000002' and name = '세비야';
+set role authenticated;
+select set_config('request.jwt.claims', '{"sub":"11111111-1111-1111-1111-111111111111","aal":"aal2"}', false);
+insert into results
+select '박수 8박으로 늘리면 변동비 +90,000 = 1,090,000', per_person_krw = 1090000, per_person_krw::text
+from public.tour_cost_totals('aaaaaaaa-0000-0000-0000-000000000002');
 insert into results
 select '표 크기 = 참가비 3 × 인원 3', count(*) = 9, count(*)::text
 from public.tour_pnl('aaaaaaaa-0000-0000-0000-000000000002');

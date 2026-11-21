@@ -8,19 +8,24 @@ export interface CostTotals {
   fixedKrw: number; // F
 }
 
-export function toKrw(item: Pick<CostItem, 'amount' | 'quantity' | 'currency'>, fx: Record<string, number>): number {
+/** 실제 수량: '박수 연동' 항목은 투어 총 박수 */
+export function effectiveQty(item: Pick<CostItem, 'quantity' | 'per_night'>, nights?: number): number {
+  return item.per_night && nights !== undefined ? nights : item.quantity;
+}
+
+export function toKrw(item: Pick<CostItem, 'amount' | 'quantity' | 'currency' | 'per_night'>, fx: Record<string, number>, nights?: number): number {
   const rate = item.currency === 'KRW' ? 1 : fx[item.currency];
   if (rate === undefined || rate === null || Number.isNaN(rate)) {
     throw new Error(`환율이 없는 통화: ${item.currency}`);
   }
-  return item.amount * item.quantity * rate;
+  return item.amount * effectiveQty(item, nights) * rate;
 }
 
-export function costTotals(items: CostItem[], fx: Record<string, number>): CostTotals {
+export function costTotals(items: CostItem[], fx: Record<string, number>, nights?: number): CostTotals {
   let v = 0;
   let f = 0;
   for (const it of items) {
-    const krw = toKrw(it, fx);
+    const krw = toKrw(it, fx, nights);
     if (it.kind === 'per_person') v += krw;
     else f += krw;
   }
