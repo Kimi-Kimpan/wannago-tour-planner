@@ -4,6 +4,8 @@ export const env = {
   supabaseKey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined,
   mapsKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined,
   mapId: import.meta.env.VITE_GOOGLE_MAP_ID as string | undefined,
+  // PDF용 정지 지도(Maps Static API)는 지도 유형이 'Static'인 Map ID를 따로 씀. 없으면 기본 스타일
+  staticMapId: import.meta.env.VITE_GOOGLE_STATIC_MAP_ID as string | undefined,
 };
 
 export const missingEnv = (['supabaseUrl', 'supabaseKey'] as const).filter((k) => !env[k]);

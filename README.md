@@ -44,7 +44,8 @@ private/               (git 제외) 실제 상품 루트·비용 파일과 그 �
 | `VITE_SUPABASE_URL` | Supabase → Project Settings → API | |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project Settings → API Keys | publishable(anon)만 |
 | `VITE_GOOGLE_MAPS_API_KEY` | Google Cloud → API 및 서비스 → 사용자 인증 정보 | 리퍼러·API 제한 필수 |
-| `VITE_GOOGLE_MAP_ID` | Google Cloud → Google Maps Platform → 지도 관리 | 벡터, JavaScript |
+| `VITE_GOOGLE_MAP_ID` | Google Cloud → Google Maps Platform → 지도 관리 | 유형 JavaScript, 벡터 |
+| `VITE_GOOGLE_STATIC_MAP_ID` | 같은 곳 | 유형 정적(Static), PDF 지도용. 같은 스타일 연결 |
 | `VITE_BASE_PATH` (Variables) | 비우면 `/<저장소명>/` | 자체 도메인이면 `/` |
 
 ## 명령

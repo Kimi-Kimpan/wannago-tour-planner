@@ -61,6 +61,7 @@ jobs:
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
           VITE_GOOGLE_MAP_ID: ${{ secrets.VITE_GOOGLE_MAP_ID }}
+          VITE_GOOGLE_STATIC_MAP_ID: ${{ secrets.VITE_GOOGLE_STATIC_MAP_ID }}
           # 자체 도메인으로 옮기면 저장소 Variables에 VITE_BASE_PATH=/ 를 넣으면 됨
           VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || format('/{0}/', github.event.repository.name) }}
       - uses: actions/upload-pages-artifact@v3

@@ -49,7 +49,7 @@ export function staticMapUrl(stops: Stop[], size = { w: 640, h: 420 }): string |
     'language=ko',
     `key=${encodeURIComponent(env.mapsKey)}`,
   ];
-  if (env.mapId) parts.push(`map_id=${encodeURIComponent(env.mapId)}`);
+  if (env.staticMapId) parts.push(`map_id=${encodeURIComponent(env.staticMapId)}`);
   const color = '0x7123F3';
   parts.push(`path=${encodeURIComponent(`color:${color}ff|weight:4|${pts.map((p) => `${p.lat},${p.lng}`).join('|')}`)}`);
   let n = 0;
