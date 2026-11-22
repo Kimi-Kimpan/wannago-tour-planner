@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import { createTour, deleteTour, duplicateTour, listTours } from '../lib/api';
 import type { Tour } from '../lib/types';
+import TourJsonModal from '../components/TourJsonModal';
 
 export default function TourList() {
   const { session, isAdmin, financeAccess } = useAuth();
@@ -10,6 +11,7 @@ export default function TourList() {
   const nav = useNavigate();
   const [tours, setTours] = useState<Tour[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Tour | null>(null); // 'JSON으로 수정' 중인 투어
 
   const reload = () => listTours().then(setTours).catch((e) => setErr(e.message));
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function TourList() {
       <div className="grid">
         {list.map((t) => (
           <div className="card tour-card" key={t.id}>
-            <div className="row between">
+            <div className="tour-card-head">
               <Link to={`/tours/${t.id}`} className="tour-name">{t.name}</Link>
               <span className={`badge ${t.status === 'final' ? 'final' : ''}`}>{t.status === 'final' ? '확정' : '초안'}</span>
             </div>
@@ -63,11 +65,14 @@ export default function TourList() {
             <p className="small">
               {t.depart_date ? `출발 ${t.depart_date}` : '출발일 미정'} · 최소 {t.min_pax}명
             </p>
-            <div className="row gap">
+            <div className="row gap tour-card-actions">
               <Link to={`/tours/${t.id}`} className="button small">열기</Link>
               <button className="small" onClick={() => dup(t.id)}>복제</button>
               {(t.created_by === me || isAdmin) && (
-                <button className="small danger" onClick={() => remove(t)}>삭제</button>
+                <>
+                  <button className="small" title="Claude와 상의해 고친 JSON을 이 투어에 바로 적용" onClick={() => setEditing(t)}>수정</button>
+                  <button className="small danger" onClick={() => remove(t)}>삭제</button>
+                </>
               )}
             </div>
           </div>
@@ -92,6 +97,19 @@ export default function TourList() {
           <Section title="내 투어" list={mine} />
           <Section title="팀 투어" list={team} />
         </>
+      )}
+      {editing && (
+        <TourJsonModal
+          tour={editing}
+          userId={me}
+          isAdmin={isAdmin}
+          financeAccess={financeAccess}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
+            void reload();
+          }}
+        />
       )}
     </div>
   );

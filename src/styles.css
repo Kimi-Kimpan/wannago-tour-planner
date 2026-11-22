@@ -81,7 +81,7 @@ fieldset { border: none; padding: 0; margin: 0; min-width: 0; }
 .note.warn { background: var(--warn-bg); }
 .note.error { background: #fde8ec; color: var(--danger); }
 ul.note { padding-left: 28px; }
-.badge { display: inline-block; font-size: 0.75rem; font-weight: 500; padding: 2px 8px; border-radius: 99px; background: #eee; color: var(--muted); }
+.badge { display: inline-block; white-space: nowrap; flex: none; font-size: 0.75rem; font-weight: 500; padding: 2px 8px; border-radius: 99px; background: #eee; color: var(--muted); }
 .badge.admin { background: var(--purple); color: #fff; }
 .badge.final { background: #dff5e7; color: #1b7a43; }
 .badge.free { background: var(--lavender); color: var(--purple); margin-right: 6px; }
@@ -107,6 +107,15 @@ ul.note { padding-left: 28px; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
 .tour-card { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.tour-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.tour-card-head .tour-name { min-width: 0; }
+.tour-card-head .badge { margin-top: 3px; }
+.tour-card-actions { margin-top: auto; padding-top: 8px; } /* 버튼을 카드 맨 아래에 맞춤 */
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(29, 21, 48, 0.35); display: grid; place-items: center; padding: 24px; animation: fade-in 0.15s; }
+.modal { width: min(820px, 100%); max-height: calc(100vh - 48px); overflow: auto; display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.modal .steps { margin: 0; padding-left: 20px; }
+.row.end { justify-content: flex-end; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .tour-name { font-weight: 700; color: var(--ink); font-size: 1.05rem; }
 .clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; margin: 0; }
 

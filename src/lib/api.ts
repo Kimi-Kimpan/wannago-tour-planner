@@ -124,6 +124,17 @@ export async function importTour(p: ParsedImport, userId: string, financeAllowed
   return tour;
 }
 
+// 'JSON으로 수정': 같은 투어에 덮어쓰기. 상태(초안/확정)와 만든 사람은 그대로 두고, 비용은 관리자(2단계 인증)일 때만
+export async function overwriteTour(current: Tour, p: ParsedImport, financeAllowed: boolean): Promise<void> {
+  const { status: _s, ...fields } = p.tour;
+  await updateTour(current.id, fields);
+  await replaceStops(current.id, p.stops);
+  if (p.hasFinance && financeAllowed) {
+    await replaceCosts(current.id, p.costs);
+    if (p.pricing) await savePricing(current.id, p.pricing);
+  }
+}
+
 export async function duplicateTour(id: string, userId: string, financeAllowed: boolean): Promise<Tour> {
   const { tour, stops } = await getTour(id);
   const { id: _i, created_by: _c, created_at: _ca, updated_at: _u, ...rest } = tour;
