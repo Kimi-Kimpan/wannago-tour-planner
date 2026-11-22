@@ -1,6 +1,7 @@
 // 왼쪽 도시 목록: 끌어서 순서 바꾸기, 박수·이동 수단·경유지·자유일·근교 옵션
 import { useState } from 'react';
 import PlaceSearch from './PlaceSearch';
+import ConfirmButton from './ConfirmButton';
 import { MODE_LABEL, type NearbyOption, type Stop, type TravelMode } from '../lib/types';
 
 const MODES = Object.keys(MODE_LABEL) as TravelMode[];
@@ -52,7 +53,6 @@ export default function StopList({
     if (open === from) setOpen(to); // 열린 도시는 따라 움직임
   };
   const remove = (i: number) => {
-    if (!confirm(`'${stops[i].name || '이름 없음'}'을 뺄까요?`)) return;
     onChange(renumber(stops.filter((_, j) => j !== i)));
     setOpen(null);
   };
@@ -213,7 +213,7 @@ export function StopDetail({
           <div className="row gap">
             <button type="button" className="small" onClick={() => onMove(-1)}>위로</button>
             <button type="button" className="small" onClick={() => onMove(1)}>아래로</button>
-            <button type="button" className="small danger" onClick={() => onRemove()}>빼기</button>
+            <ConfirmButton className="small danger" confirmLabel="정말 빼기" onConfirm={onRemove}>빼기</ConfirmButton>
           </div>
         )}
       </fieldset>

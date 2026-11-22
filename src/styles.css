@@ -115,6 +115,9 @@ ul.note { padding-left: 28px; }
 .modal { width: min(820px, 100%); max-height: calc(100vh - 48px); overflow: auto; display: flex; flex-direction: column; gap: 10px; margin: 0; }
 .modal .steps { margin: 0; padding-left: 20px; }
 .row.end { justify-content: flex-end; }
+.confirm-inline { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.confirm-msg { color: var(--danger); }
+button.confirm-yes { box-shadow: 0 0 0 2px rgba(212, 60, 90, 0.25); }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .tour-name { font-weight: 700; color: var(--ink); font-size: 1.05rem; }
 .clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; margin: 0; }

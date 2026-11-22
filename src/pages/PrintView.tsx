@@ -57,7 +57,7 @@ export default function PrintView() {
     try {
       await logExport(tour!.id, `pdf_${mode}`, mode === 'internal', session!.user.id);
     } catch (e) {
-      alert(`내보내기 기록을 남기지 못했어요: ${(e as Error).message}`);
+      setErr(`내보내기 기록을 남기지 못했어요: ${(e as Error).message}`);
       return;
     }
     window.print();

@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthProvider';
 import { createTour, deleteTour, duplicateTour, listTours } from '../lib/api';
 import type { Tour } from '../lib/types';
 import TourJsonModal from '../components/TourJsonModal';
+import ConfirmButton from '../components/ConfirmButton';
 
 export default function TourList() {
   const { session, isAdmin, financeAccess } = useAuth();
@@ -42,8 +43,11 @@ export default function TourList() {
   }
 
   async function remove(t: Tour) {
-    if (!confirm(`'${t.name}' 투어를 삭제할까요? 되돌릴 수 없어요.`)) return;
-    await deleteTour(t.id).catch((e) => alert(e.message));
+    try {
+      await deleteTour(t.id);
+    } catch (e) {
+      setErr((e as Error).message);
+    }
     void reload();
   }
 
@@ -71,7 +75,9 @@ export default function TourList() {
               {(t.created_by === me || isAdmin) && (
                 <>
                   <button className="small" title="Claude와 상의해 고친 JSON을 이 투어에 바로 적용" onClick={() => setEditing(t)}>수정</button>
-                  <button className="small danger" onClick={() => remove(t)}>삭제</button>
+                  <ConfirmButton className="small danger" confirmLabel="정말 삭제" onConfirm={() => remove(t)}>
+                    삭제
+                  </ConfirmButton>
                 </>
               )}
             </div>

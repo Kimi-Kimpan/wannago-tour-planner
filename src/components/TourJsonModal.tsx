@@ -1,6 +1,7 @@
 // 투어 카드의 '수정': 지금 투어를 JSON으로 보여 주고, Claude와 상의해 고친 JSON을 붙여 넣으면
 // 새 투어를 만들지 않고 이 투어에 바로 덮어씁니다. (상태·만든 사람은 그대로)
 import { useEffect, useState } from 'react';
+import ConfirmButton from './ConfirmButton';
 import { getCosts, getPricing, getTour, logExport, overwriteTour } from '../lib/api';
 import { buildTourFile, CLAUDE_FORMAT_GUIDE, parseTourFile, type ParsedImport } from '../lib/importExport';
 import { buildItinerary, totalNights } from '../lib/itinerary';
@@ -68,7 +69,6 @@ export default function TourJsonModal({
 
   async function apply() {
     if (!parsed) return;
-    if (!confirm(`'${tour.name}'의 루트·일정표${parsed.hasFinance && financeAccess ? '·비용' : ''}을 붙여 넣은 내용으로 바꿀까요? 투어 화면의 ↶ 되돌리기로는 되돌릴 수 없어요.`)) return;
     setBusy(true);
     try {
       await overwriteTour(tour, parsed, financeAccess);
@@ -120,7 +120,15 @@ export default function TourJsonModal({
         )}
         <div className="row gap end">
           <button onClick={onClose}>닫기</button>
-          <button className="primary" disabled={!parsed || busy} onClick={apply}>{busy ? '적용 중…' : '이 투어에 적용'}</button>
+          <ConfirmButton
+            className="primary"
+            disabled={!parsed || busy}
+            confirmLabel="정말 적용"
+            message={`루트·일정표${parsed?.hasFinance && financeAccess ? '·비용' : ''}이 바뀌고 되돌릴 수 없어요`}
+            onConfirm={apply}
+          >
+            {busy ? '적용 중…' : '이 투어에 적용'}
+          </ConfirmButton>
         </div>
       </div>
     </div>

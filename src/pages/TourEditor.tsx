@@ -144,7 +144,7 @@ export default function TourEditor() {
     setSelected(to);
   };
   const detailRemove = () => {
-    if (sel === null || !confirm(`'${stops[sel].name || '이름 없음'}'을 뺄까요?`)) return;
+    if (sel === null) return;
     setStops(renumber(stops.filter((_, j) => j !== sel)), 'stops-remove');
     setSelected(null);
   };
