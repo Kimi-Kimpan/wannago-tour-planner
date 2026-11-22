@@ -118,9 +118,8 @@ export function buildItinerary(stopsIn: Stop[], tour: TourLike): ItineraryDay[] 
 
   for (const day of days) {
     if (!day.autoPlan) {
-      if (day.isFree) {
-        day.autoPlan = day.freeOptions.length ? `자유일: ${day.base} 또는 ${day.freeOptions.join(' / ')}` : `자유일: ${day.base}`;
-      } else if (day.transfer) {
+      // 자유일 표시는 쓰지 않음(워너고는 전 일정 조별 자유여행). 이동일만 경유지를 자동으로 적음
+      if (day.transfer) {
         day.autoPlan = day.transfer.vias.length ? `${day.transfer.vias.join('·')} 경유` : '';
       }
     }

@@ -114,8 +114,7 @@ export default function ImportExport() {
         {parsed && (
           <div className="preview">
             <p>
-              <b>{parsed.tour.name}</b> · 도시 {parsed.stops.length}곳 · 현지 {totalNights(parsed.stops)}박 · 총 {preview.length}일 · 자유일{' '}
-              {preview.filter((d) => d.isFree).map((d) => d.day).join('·') || '없음'}
+              <b>{parsed.tour.name}</b> · 도시 {parsed.stops.length}곳 · 현지 {totalNights(parsed.stops)}박 · 총 {preview.length}일
             </p>
             {parsed.hasFinance && (
               <p className={`note ${financeAccess ? '' : 'warn'}`}>

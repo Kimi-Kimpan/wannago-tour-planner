@@ -1,4 +1,4 @@
-// 왼쪽 도시 목록: 끌어서 순서 바꾸기, 박수·이동 수단·경유지·자유일·근교 옵션
+// 왼쪽 도시 목록: 끌어서 순서 바꾸기, 박수·이동 수단·경유지·근교 당일치기 후보
 import { useState } from 'react';
 import PlaceSearch from './PlaceSearch';
 import ConfirmButton from './ConfirmButton';
@@ -92,7 +92,6 @@ export default function StopList({
                 <span className="stop-name">{s.name || '이름 없음'}</span>
                 <span className="small muted">
                   {isStay ? `${s.nights}박` : '경유'} · {MODE_LABEL[s.arrive_mode]}
-                  {s.free_days > 0 && ` · 자유일 ${s.free_days}`}
                   {s.lat === null && ' · 좌표 없음'}
                 </span>
               </div>
@@ -163,16 +162,6 @@ export function StopDetail({
                 박수
                 <input type="number" min={1} value={s.nights} onChange={(e) => set({ nights: Math.max(0, Number(e.target.value)) })} />
               </label>
-              <label>
-                자유일 수
-                <input
-                  type="number"
-                  min={0}
-                  max={Math.max(0, s.nights - 1)}
-                  value={s.free_days}
-                  onChange={(e) => set({ free_days: Math.min(Math.max(0, Number(e.target.value)), Math.max(0, s.nights - 1)) })}
-                />
-              </label>
             </>
           )}
           <label>
@@ -225,7 +214,7 @@ function NearbyEditor({ list, onChange, canEdit }: { list: NearbyOption[]; onCha
   const set = (i: number, patch: Partial<NearbyOption>) => onChange(list.map((n, j) => (j === i ? { ...n, ...patch } : n)));
   return (
     <div className="nearby">
-      <div className="small strong">자유일 근교 옵션</div>
+      <div className="small strong">근교 당일치기 후보</div>
       {list.map((n, i) => (
         <div className="nearby-row" key={i}>
           <input value={n.name} placeholder="도시" onChange={(e) => set(i, { name: e.target.value })} />

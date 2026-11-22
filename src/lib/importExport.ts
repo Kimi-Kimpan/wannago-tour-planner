@@ -86,8 +86,6 @@ export function parseTourFile(text: string): { ok: true; value: ParsedImport } |
     if (!optNum(s?.lat) || !optNum(s?.lng)) errors.push(`${at}.lat/lng는 숫자`);
     if (s && (s.lat === undefined || s.lat === null)) warnings.push(`${s.name}: 좌표가 없어 지도에 안 나와요(편집 화면에서 검색해 넣기)`);
     if (s?.kind === 'via' && s.nights) warnings.push(`${s.name}: 경유지라 박수는 무시돼요`);
-    if (s && (s.free_days ?? 0) > Math.max(0, (s.nights ?? 0) - 1))
-      warnings.push(`${s.name}: 자유일이 머무는 날보다 많아 ${Math.max(0, (s.nights ?? 0) - 1)}일로 줄어요`);
   });
 
   (f.days ?? []).forEach((d, i) => {
@@ -240,11 +238,11 @@ export const CLAUDE_FORMAT_GUIDE = `아래 JSON 형식(wannago-tour/v1)으로 �
             "fx_rates": { "KRW": 1, "EUR": 1500 }, "origin_label": "인천", "return_overnight": true },
   "stops": [
     { "name": "도시", "lat": 38.7223, "lng": -9.1393, "kind": "stay", "nights": 3,
-      "arrive_mode": "flight", "arrive_note": "인천 → 도시 항공", "free_days": 1,
+      "arrive_mode": "flight", "arrive_note": "인천 → 도시 항공",
       "nearby": [ { "name": "근교 도시", "lat": 38.70, "lng": -9.42, "note": "기차 약 1시간 30분" } ] },
     { "name": "경유 도시", "lat": 0, "lng": 0, "kind": "via", "arrive_mode": "bus" }
   ],
   "days": [ { "day": 1, "plan": "그날 주요 일정" } ]
 }
 규칙: stops는 방문 순서대로. kind는 stay(숙박) 또는 via(경유, 박수 없음). arrive_mode는 flight/bus/train/car/ferry 중 하나이고 '그 도시에 도착할 때'의 이동 수단.
-free_days는 그 도시에서의 자유일 수(도착일 제외). days는 자동 일정표를 덮어쓸 날만. 비용·가격(finance)은 넣지 마.`;
+nearby는 근교 당일치기 후보(선택). days는 자동 일정표를 덮어쓸 날만. 비용·가격(finance)은 넣지 마.`;

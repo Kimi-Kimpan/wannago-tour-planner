@@ -61,22 +61,15 @@ export default function ItineraryTable({
           {days.map((d, idx) => {
             const inStay = d.stopIndex !== null;
             return (
-              <tr key={d.key} className={d.isFree ? 'free' : d.transfer ? 'move' : ''}>
+              <tr key={d.key} className={d.transfer ? 'move' : ''}>
                 <td className="c-day">{d.day}</td>
                 <td className="c-move small">{d.transfer ? transferText(d.transfer) : '-'}</td>
                 <td>
-                  {editable && inStay && d.k !== 0 ? (
-                    <label className="free-toggle">
-                      <input type="checkbox" checked={d.isFree} onChange={(e) => actions!.onToggleFree(idx, e.target.checked)} /> 자유일
-                    </label>
-                  ) : (
-                    d.isFree && <span className="badge free">자유일</span>
-                  )}
                   {editable ? (
                     <textarea
                       rows={2}
                       value={d.plan}
-                      placeholder={d.autoPlan || '주요 일정'}
+                      placeholder={d.autoPlan || (d.transfer ? '이동일 일정' : '조별 일정 · 대장님 투어가 있으면 적기')}
                       onChange={(e) => actions!.onEdit(d.key, { plan: e.target.value })}
                     />
                   ) : (
@@ -113,7 +106,7 @@ export default function ItineraryTable({
       </table>
       {editable && (
         <p className="small muted">
-          ↑↓로 이동일(도시 도착일)을 옮기면 앞뒤 도시의 박수가 바뀌어요. 같은 도시 안에서는 그날의 일정·메모·자유일이 자리를 바꿔요. 도시 순서는 위쪽 도시 목록에서 바꿔 주세요.
+          ↑↓로 이동일(도시 도착일)을 옮기면 앞뒤 도시의 박수가 바뀌어요. 같은 도시 안에서는 그날의 일정·메모가 자리를 바꿔요. 도시 순서는 위쪽 도시 목록에서 바꿔 주세요.
         </p>
       )}
     </>

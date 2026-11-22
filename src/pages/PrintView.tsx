@@ -1,4 +1,4 @@
-// A4 인쇄용 기획안. 표지 → 루트 지도 → 일차별 일정표 → 자유일 근교 옵션 → 매출(내부용만)
+// A4 인쇄용 기획안. 표지 → 루트 지도 → 일차별 일정표 → 근교 당일치기 후보 → 매출(내부용만)
 // 매출 페이지는 관리자(2단계 인증)가 '내부용'으로 열 때만 DB에서 불러와 넣습니다.
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -107,19 +107,17 @@ export default function PrintView() {
 
       {nearbyRows.length > 0 && (
         <section className="sheet">
-          <h2>자유일 근교 옵션</h2>
+          <h2>근교 당일치기 후보</h2>
           <table className="itinerary">
             <thead>
               <tr>
-                <th>자유일</th>
                 <th>거점</th>
-                <th>근교 옵션</th>
+                <th>근교 당일치기 후보</th>
               </tr>
             </thead>
             <tbody>
               {nearbyRows.map((r) => (
                 <tr key={r.base}>
-                  <td>{r.days.map((d) => `${d}일차`).join(', ') || '-'}</td>
                   <td>{r.base}</td>
                   <td>
                     {r.list.map((n) => (

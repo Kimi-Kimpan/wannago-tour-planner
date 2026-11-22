@@ -22,7 +22,7 @@ test('숙박 배분: 리스본 3 · 세비야 2 · 그라나다 2', () => {
 
 test('자유일은 머무는 날의 끝에서부터: 3·7일차', () => {
   assert.deepEqual(days.filter((d) => d.isFree).map((d) => d.day), [3, 7]);
-  assert.match(days[2].plan, /카스카이스/);
+  assert.equal(days[2].plan, ''); // 자유일 문구는 자동으로 만들지 않음
 });
 
 test('이동일과 경유지', () => {
