@@ -82,11 +82,6 @@ export default function ItineraryTable({
                   ) : (
                     <span>{d.plan}</span>
                   )}
-                  {d.edited && editable && (
-                    <button className="link small" onClick={() => actions!.onEdit(d.key, { plan: '' })} title="자동 일정으로 되돌리기">
-                      자동으로 되돌리기
-                    </button>
-                  )}
                 </td>
                 <td className="c-sleep">{d.sleep}</td>
                 {showMemo && (

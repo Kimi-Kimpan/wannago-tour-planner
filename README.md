@@ -111,10 +111,11 @@ N 인원, P 1인 참가비, V 1인 변동비, F 고정비, r 결제 수수료율
 설계상 코드는 그대로 두고 **값만** 바꾸면 됩니다.
 
 1. **저장소 이전**: GitHub → Settings → Transfer ownership으로 회사 조직에 넘기거나, 회사 저장소에 `git push --mirror`
+   - 이때 저장소 이름을 앱 이름(트래블 플래너)에 맞게 바꿔요. 예: `travel-planner` (Settings → General → Repository name). github.io 주소를 계속 쓰면 주소도 `…github.io/travel-planner/`로 바뀌니 5번의 주소 설정을 함께 고쳐요
 2. **Supabase 새로 설치**: 회사 계정에 새 프로젝트 → `supabase/migrations/*.sql` 순서대로 실행 → 위 '처음 설정' 2~6단계. 프로토타입의 데이터는 예시·추정치이므로 옮기지 않고, 필요한 루트만 앱의 JSON 내보내기 → 새 환경에서 가져오기(실제 원가는 회사 환경에서 새로 입력)
 3. **구글 키 교체**: 회사 Google Cloud 프로젝트에서 세 API 켜기 → 새 키(리퍼러: 회사 도메인) → 지도 스타일을 만들고 새 Map ID 발급
 4. **Secrets 교체**: 새 저장소 Secrets에 위 환경변수 4개를 회사 값으로
-5. **도메인 연결**: Pages → Custom domain에 `tours.회사도메인` 입력, DNS에 CNAME(`<조직>.github.io`) 추가, Enforce HTTPS 켜기, 저장소 Variables에 `VITE_BASE_PATH=/`. Supabase Site URL·Redirect URLs와 구글 키 리퍼러도 새 도메인으로
+5. **도메인 연결**: Pages → Custom domain에 `planner.회사도메인`(또는 `travel-planner.회사도메인`) 입력, DNS에 CNAME(`<조직>.github.io`) 추가, Enforce HTTPS 켜기, 저장소 Variables에 `VITE_BASE_PATH=/`. Supabase Site URL·Redirect URLs와 구글 키 리퍼러도 새 도메인으로
 6. (선택) **앱 입구 잠금**: 도메인 DNS를 Cloudflare로 옮긴 뒤 Cloudflare Access(회사 이메일 인증)를 내부 주소 앞에 두기
 7. (선택) 다른 호스팅(Vercel 등)으로 옮길 때도 `npm run build` 결과(`dist/`)만 올리면 됩니다. 해시 라우팅이라 서버 설정이 필요 없어요.
 
