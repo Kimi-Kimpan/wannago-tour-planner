@@ -65,7 +65,7 @@ function Shell({ onAdminLogin }: { onAdminLogin: () => void }) {
     <>
       <header className="topbar">
         <NavLink to="/" className="logo">
-          <span className="brand-mark small" /> 투어 루트 플래너
+          <span className="brand-mark small" /> 트래블 플래너
         </NavLink>
         <nav>
           <NavLink to="/" end>투어</NavLink>

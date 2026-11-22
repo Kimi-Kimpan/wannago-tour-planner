@@ -14,7 +14,7 @@ import {
   type RouteState,
 } from '../lib/itinerary';
 import type { DayOverride, Stop, Tour } from '../lib/types';
-import StopList from '../components/StopList';
+import StopList, { StopDetail } from '../components/StopList';
 import RouteMap from '../components/RouteMap';
 import ItineraryTable, { type DayActions } from '../components/ItineraryTable';
 import FinancePanel from '../components/FinancePanel';
@@ -40,6 +40,7 @@ export default function TourEditor() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('itinerary');
+  const [selected, setSelected] = useState<number | null>(null); // 오른쪽 패널에 연 도시
 
   const snap = hist.present;
   const tour = snap?.tour ?? null;
@@ -121,6 +122,31 @@ export default function TourEditor() {
   const setRoute = (r: RouteState | null) => {
     if (!r) return;
     apply((s) => ({ ...s, stops: r.stops, tour: { ...s.tour, itinerary: r.itinerary } }));
+  };
+
+  const setStops = (next: Stop[], key = 'stops') =>
+    apply((s) => ({ ...s, stops: next, tour: { ...s.tour, itinerary: rekeyAfterStopEdit(s.stops, next, s.tour.itinerary) } }), key);
+  const renumber = (list: Stop[]) => list.map((x, i) => ({ ...x, position: i + 1 }));
+  const sel = selected !== null && selected < stops.length ? selected : null;
+  const selStop = sel !== null ? stops[sel] : null;
+  const selNumber =
+    selStop && selStop.kind === 'stay' && selStop.nights > 0
+      ? stops.slice(0, (sel as number) + 1).filter((x) => x.kind === 'stay' && x.nights > 0).length
+      : null;
+  const detailMove = (dir: -1 | 1) => {
+    if (sel === null) return;
+    const to = sel + dir;
+    if (to < 0 || to >= stops.length) return;
+    const list = [...stops];
+    const [it] = list.splice(sel, 1);
+    list.splice(to, 0, it);
+    setStops(renumber(list), 'stops-move');
+    setSelected(to);
+  };
+  const detailRemove = () => {
+    if (sel === null || !confirm(`'${stops[sel].name || '이름 없음'}'을 뺄까요?`)) return;
+    setStops(renumber(stops.filter((_, j) => j !== sel)), 'stops-remove');
+    setSelected(null);
   };
 
   const actions: DayActions = {
@@ -226,20 +252,25 @@ export default function TourEditor() {
         </p>
       </fieldset>
 
-      <div className="editor">
+      <div className={`editor ${selStop ? 'with-detail' : ''}`}>
         <aside>
-          <StopList
-            stops={stops}
-            onChange={(next) =>
-              apply(
-                (s) => ({ ...s, stops: next, tour: { ...s.tour, itinerary: rekeyAfterStopEdit(s.stops, next, s.tour.itinerary) } }),
-                'stops',
-              )
-            }
-            canEdit={canEdit}
-          />
+          <StopList stops={stops} onChange={(next) => setStops(next)} canEdit={canEdit} selected={sel} onSelect={setSelected} />
         </aside>
-        <section>
+        <div className="detail-slot">
+          {selStop && (
+            <StopDetail
+              key={sel}
+              stop={selStop}
+              number={selNumber}
+              canEdit={canEdit}
+              onPatch={(p) => setStops(stops.map((x, j) => (j === sel ? { ...x, ...p } : x)), `stop:${sel}`)}
+              onMove={detailMove}
+              onRemove={detailRemove}
+              onClose={() => setSelected(null)}
+            />
+          )}
+        </div>
+        <section className="map-col">
           <RouteMap stops={stops} />
         </section>
       </div>

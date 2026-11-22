@@ -24,7 +24,8 @@ function markerEl(kind: 'stay' | 'via' | 'nearby', label: string, sub?: string):
   return wrap;
 }
 
-export default function RouteMap({ stops, height = 520 }: { stops: Stop[]; height?: number }) {
+export default function RouteMap({ stops, height }: { stops: Stop[]; height?: number }) {
+  // height를 안 주면 부모 높이를 꽉 채움(도시 목록 길이에 맞춰 늘어남)
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markers = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
@@ -117,12 +118,12 @@ export default function RouteMap({ stops, height = 520 }: { stops: Stop[]; heigh
 
   if (!mapsConfigured)
     return (
-      <div className="map-placeholder" style={{ height }}>
+      <div className="map-placeholder" style={height ? { height } : undefined}>
         구글 지도 키(VITE_GOOGLE_MAPS_API_KEY)와 Map ID(VITE_GOOGLE_MAP_ID)를 넣으면 여기에 지도가 나와요.
       </div>
     );
   return (
-    <div className="map-wrap" style={{ height }}>
+    <div className="map-wrap" style={height ? { height } : undefined}>
       <div ref={ref} className="map" />
       {error && <div className="map-error">{error}</div>}
       <div className="map-legend">

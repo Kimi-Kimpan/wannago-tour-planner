@@ -33,7 +33,7 @@ export default function Login() {
     <div className="center-page">
       <form className="card login" onSubmit={withPassword}>
         <div className="brand-mark" />
-        <h1>투어 루트 플래너</h1>
+        <h1>트래블 플래너</h1>
         <p className="muted">매드엑스컴퍼니 팀원 전용 · 초대받은 계정으로 로그인</p>
         <label>
           이메일
